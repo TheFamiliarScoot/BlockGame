@@ -1,0 +1,1 @@
+global.world_scale = 64

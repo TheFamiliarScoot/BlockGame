@@ -1,0 +1,9 @@
+{
+  "extensionId": {
+    "name": "NoisePack_CPU",
+    "path": "extensions/NoisePack_CPU/NoisePack_CPU.yy"
+  },
+  "resourceVersion": "1.0",
+  "resourceType": "GMExtensionConfigSet",
+  "configurables": null
+}

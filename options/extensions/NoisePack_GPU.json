@@ -1,0 +1,9 @@
+{
+  "extensionId": {
+    "name": "NoisePack_GPU",
+    "path": "extensions/NoisePack_GPU/NoisePack_GPU.yy"
+  },
+  "resourceVersion": "1.0",
+  "resourceType": "GMExtensionConfigSet",
+  "configurables": null
+}
