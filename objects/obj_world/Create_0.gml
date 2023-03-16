@@ -7,23 +7,16 @@ for (var xx = 0; xx < 8; xx++)
 {
 	for (var zz = 0; zz < 8; zz++)
 	{
-		var c = new chunk(xx, 0, zz, 16, 16, 16)
-		c.generate(noise)
-		c.update_vbuffers()
+		var c = new chunk(xx, 0, zz, 16, 64, 16)
 		chunks[xx, zz] = c
 	}
 }
 
 get_chunk = function(xx, zz)
 {
-	try
-	{
+	if ((xx >= 0 && xx < array_length(chunks)) && (zz >= 0 && zz < array_length(chunks[xx])))
 		return chunks[xx, zz]
-	}
-	catch (e)
-	{
-		return undefined	
-	}
+	return undefined	
 }
 
 queue_update = function(xx, yy, zz)
@@ -50,7 +43,7 @@ set_block = function(xx, yy, zz, bl)
 	var c = get_chunk(floor(xx / 16), floor(zz / 16))
 	if (c != undefined)
 	{
-		c.set_block_in_grid(xx, yy, zz, bl)
+		c.set_block_in_grid(xx % c.sizex, yy, zz % c.sizez, bl)
 		queue_update(xx, yy + 1, zz)
 		queue_update(xx, yy - 1, zz)
 		queue_update(xx + 1, yy, zz)
@@ -77,4 +70,16 @@ get_aabbs_in_range = function(fromx, fromy, fromz, tox, toy, toz)
 		}
 	}
 	return aabbs
+}
+
+for (var xx = 0; xx < array_length(chunks); xx++)
+{
+	for (var zz = 0; zz < array_length(chunks[xx]); zz++)
+	{
+		if (!chunks[xx][zz].is_generated)
+		{
+			chunks[xx][zz].generate(noise)
+			chunks[xx][zz].update_vbuffers()
+		}
+	}
 }

@@ -62,7 +62,11 @@ with (plyr)
 				other.block_selected = true
 				other.sel_block_x = floor(aabb_pool[i].center.x)
 				other.sel_block_y = floor(aabb_pool[i].center.y)
-				other.sel_block_z = floor(aabb_pool[i].center.z)				
+				other.sel_block_z = floor(aabb_pool[i].center.z)
+				other.sel_norm_x = floor(other.hit.normal.x)
+				other.sel_norm_y = floor(other.hit.normal.y)
+				other.sel_norm_z = floor(other.hit.normal.z)
+				lastdist = other.hit.distance
 			}
 		}
 	}
@@ -72,13 +76,24 @@ if (block_selected && (mouse_check_button_pressed(mb_left) || gamepad_button_che
 {
 	obj_world.set_block(sel_block_x, sel_block_y, sel_block_z, 0);
 }
+if (block_selected && (mouse_check_button_pressed(mb_right) || gamepad_button_check_pressed(0, gp_shoulderlb)))
+{
+	var xx = sel_block_x + sel_norm_x
+	var yy = sel_block_y + sel_norm_y
+	var zz = sel_block_z + sel_norm_z
+	
+	if (obj_world.get_block(xx, yy, zz) == 0)
+	{
+		obj_world.set_block(xx, yy, zz, 1)
+	}
+}
 
 if (gamepad_button_check_pressed(0, gp_select) || keyboard_check_pressed(ord("R")))
 {
 	instance_destroy(plyr);
 	plyr = instance_create_depth(0, 0, 0, obj_player)
 	plyr.pos_x = 0.5
-	plyr.pos_y = 16
+	plyr.pos_y = 32
 	plyr.pos_z = 0.5
 	obj_game.player = plyr
 }

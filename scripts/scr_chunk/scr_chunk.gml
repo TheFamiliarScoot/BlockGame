@@ -7,52 +7,29 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 	self.sizey = sizey
 	self.sizez = sizez
 	
-	self.grid = []
-	self.vbuffers = []
+	self.grid_buffer = buffer_create(sizex*sizey*sizez, buffer_fast, 1)
 	
 	self.batched_buffer = undefined
 	
 	self.updates_needed = []
 	
-	for (var xx = 0; xx < sizex; xx++)
-	{
-		for (var yy = 0; yy < sizey; yy++)
-		{
-			for (var zz = 0; zz < sizez; zz++)
-			{
-				grid[xx][yy][zz] = 0
-				vbuffers[xx][yy][zz] = undefined
-			}
-		}
-	}
+	self.is_generated = false
 	
 	static get_block_in_grid = function(xx, yy, zz)
 	{
-		if (xx < sizex && xx >= 0)
+		if ((xx < sizex && xx >= 0) && (yy < sizey && yy >= 0) && (zz < sizez && zz >= 0))
 		{
-			if (yy < sizey && yy >= 0)
-			{
-				if (zz < sizez && zz >= 0)
-				{
-					return grid[xx][yy][zz];	
-				}
-			}
+			return buffer_peek(grid_buffer, g_flatten(xx, yy, zz, sizex, sizey, sizez), buffer_u8)
 		}
 		return -1;
 	}
 	
 	static set_block_in_grid = function(xx, yy, zz, bl)
 	{
-		if (xx < sizex && xx >= 0)
+		if ((xx < sizex && xx >= 0) && (yy < sizey && yy >= 0) && (zz < sizez && zz >= 0))
 		{
-			if (yy < sizey && yy >= 0)
-			{
-				if (zz < sizez && zz >= 0)
-				{
-					grid[xx][yy][zz] = bl;
-					queue_update(xx, yy, zz)
-				}
-			}
+			buffer_poke(grid_buffer, g_flatten(xx, yy, zz, sizex, sizey, sizez), buffer_u8, bl)
+			queue_update(xx, yy, zz)
 		}
 	}
 	
@@ -97,80 +74,34 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 			{
 				for (var zz = 0; zz < sizez; zz++)
 				{
+					/*
 					var level = noise.get_noise(xx + x * sizex, 0, zz + z * sizez)
 					var topY = floor((sizey / 2) + level * 0.2);
-					grid[xx][yy][zz] = yy < topY ? global.block_stone : 0 
-				}
-			}
-		}
-	}
-	
-	static update_vbuffer = function(xx, yy, zz)
-	{
-		var bl = get_block_in_grid(xx, yy, zz)
-		if (bl > -1)
-		{
-			if (!is_undefined(vbuffers[xx][yy][zz]))
-			{
-				vertex_delete_buffer(vbuffers[xx][yy][zz])
-			}
-			if (bl > 0)
-			{
-				var drew_one_face = false
-				for (var face = 0; face < 6; face++)
-				{
-					if (!block_occludes_face(xx, yy, zz, face))
+					grid[xx][yy][zz] = yy < topY ? global.block_stone : 0
+					*/
+					var blockid = 0;
+					if (yy < 16)
 					{
-						if (!drew_one_face)
-						{
-							vbuffers[xx][yy][zz] = r_start_drawing(global.vformat_block)
-							drew_one_face = true	
-						}
-						br_draw_face(vbuffers[xx][yy][zz], global.blocks[bl].get_face(face), xx, yy, zz, face)
+						blockid = 1;	
 					}
-				}
-				if (drew_one_face)
-				{
-					r_stop_drawing(vbuffers[xx][yy][zz])
-				}
-				else
-				{
-					vbuffers[xx][yy][zz] = undefined
+					else if (yy < 19)
+					{
+						blockid = 3;
+					}
+					else if (yy < 20)
+					{
+						blockid = 2;	
+					}
+					buffer_poke(grid_buffer, g_flatten(xx, yy, zz, sizex, sizey, sizez), buffer_u8, blockid)
 				}
 			}
-			else
-			{
-				vbuffers[xx][yy][zz] = undefined;
-			}	
 		}
+		is_generated = true
 	}
 	
 	static update_vbuffers = function()
 	{
-		for (var xx = 0; xx < sizex; xx++)
-		{
-			for (var yy = 0; yy < sizey; yy++)
-			{
-				for (var zz = 0; zz < sizez; zz++)
-				{
-					update_vbuffer(xx, yy, zz)
-				}
-			}
-		}
-		batch_buffer()
-	}
-	
-	static draw_vbuffers = function()
-	{
-		vertex_submit(batched_buffer, pr_trianglelist, sprite_get_texture(tx_null_block, 0))
-	}
-	
-	static batch_buffer = function()
-	{
-		if (batched_buffer != undefined)
-		{
-			vertex_delete_buffer(batched_buffer)
-		}
+		if (batched_buffer != undefined) vertex_delete_buffer(batched_buffer)
 		batched_buffer = r_start_drawing(global.vformat_block)
 		for (var xx = 0; xx < sizex; xx++)
 		{
@@ -178,15 +109,30 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 			{
 				for (var zz = 0; zz < sizez; zz++)
 				{
-					if (vbuffers[xx][yy][zz] != undefined)
+					var bl = get_block_in_grid(xx, yy, zz)
+					if (bl > 0)
 					{
-						br_add_vertex_buffer(batched_buffer, vbuffers[xx][yy][zz], matrix_build_identity())
+						for (var face = 0; face < 6; face++)
+						{
+							if (!block_occludes_face(xx, yy, zz, face))
+							{
+								br_draw_face(batched_buffer, global.blocks[bl].get_face(face), xx, yy, zz, face)
+							}
+						}	
 					}
 				}
 			}
 		}
 		r_stop_drawing(batched_buffer)
 		vertex_freeze(batched_buffer)
+	}
+	
+	static draw_vbuffers = function()
+	{
+		if (batched_buffer != undefined)
+		{
+			vertex_submit(batched_buffer, pr_trianglelist, sprite_get_texture(tx_null_block, 0))	
+		}
 	}
 	
 	static handle_updates_needed = function()
@@ -199,10 +145,9 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 				var xx = update[0]
 				var yy = update[1]
 				var zz = update[2]
-				update_vbuffer(xx, yy, zz)
 				array_pop(updates_needed)
 			}
-			batch_buffer()
+			update_vbuffers()
 		}
 	}
 	
@@ -210,4 +155,15 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 	{
 		array_push(updates_needed, [ xx, yy, zz ])
 	}
+	
+	static unload = function()
+	{
+		buffer_delete(grid_buffer)
+		vertex_delete_buffer(batched_buffer)
+	}
+}
+	
+function g_flatten(xx, yy, zz, sizex, sizey, sizez)
+{
+	return zz * sizex * sizey + yy * sizex + xx
 }

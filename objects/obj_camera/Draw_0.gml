@@ -1,5 +1,3 @@
-draw_clear(c_red)
-
 r_push_matrix()
 r_scale(global.world_scale, global.world_scale, global.world_scale)
 

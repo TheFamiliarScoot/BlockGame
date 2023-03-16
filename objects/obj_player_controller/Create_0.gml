@@ -9,6 +9,9 @@ block_selected = false
 sel_block_x = 0
 sel_block_y = 0
 sel_block_z = 0
+sel_norm_x = 0
+sel_norm_y = 0
+sel_norm_z = 0
 
 sensitivity = 10
 
