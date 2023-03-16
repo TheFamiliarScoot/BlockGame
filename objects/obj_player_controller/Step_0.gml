@@ -11,8 +11,11 @@ with (plyr)
 		var mouse_in_y = window_mouse_get_y() >= 0 && window_mouse_get_y() < window_get_height();
 		if (window_has_focus() && mouse_in_x && mouse_in_y)
 		{
-			other.look_vec.x = (((window_mouse_get_x() + 0.5) - window_get_width() / 2) * _dt) * other.sensitivity;
-			other.look_vec.y = ((window_mouse_get_y() - window_get_height() / 2) * _dt) * other.sensitivity;
+			var md = other.mouse_deadzone
+			var xx = (((window_mouse_get_x() + 0.5) - window_get_width() / 2) * _dt)
+			var yy = ((window_mouse_get_y() - window_get_height() / 2) * _dt)
+			other.look_vec.x = xx < md && xx > -md ? 0 : xx * other.sensitivity
+			other.look_vec.y = yy < md && yy > -md ? 0 : yy * other.sensitivity
 			window_set_cursor(cr_none);	
 			window_mouse_set(window_get_width() / 2, window_get_height() / 2);
 		}
@@ -84,7 +87,7 @@ if (block_selected && (mouse_check_button_pressed(mb_right) || gamepad_button_ch
 	
 	if (obj_world.get_block(xx, yy, zz) == 0)
 	{
-		obj_world.set_block(xx, yy, zz, 1)
+		obj_world.set_block(xx, yy, zz, selected_block)
 	}
 }
 
@@ -92,11 +95,20 @@ if (gamepad_button_check_pressed(0, gp_select) || keyboard_check_pressed(ord("R"
 {
 	instance_destroy(plyr);
 	plyr = instance_create_depth(0, 0, 0, obj_player)
-	plyr.pos_x = 0.5
+	plyr.pos_x = 64
 	plyr.pos_y = 32
-	plyr.pos_z = 0.5
+	plyr.pos_z = 64
 	obj_game.player = plyr
 }
 
+if (mouse_wheel_down() || gamepad_button_check_pressed(0, gp_shoulderr))
+{
+	selected_block = clamp(selected_block + 1, 1, 3)
+}
+
+if (mouse_wheel_up() || gamepad_button_check_pressed(0, gp_shoulderl))
+{
+	selected_block = clamp(selected_block - 1, 1, 3)
+}
 	
 hit.clear();

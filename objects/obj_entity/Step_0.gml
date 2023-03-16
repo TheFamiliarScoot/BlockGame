@@ -80,7 +80,7 @@ pos_z += dz;
 
 box.center.y -= 0.01;
 
-vel_x /= frict * _dt
-vel_z /= frict * _dt
+vel_x /= frict
+vel_z /= frict
 
 vel_y -= 0.3;

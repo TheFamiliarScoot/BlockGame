@@ -9,7 +9,7 @@ vel_x = 0
 vel_y = 0
 vel_z = 0
 
-frict = 80
+frict = 1.35
 
 on_ground = false
 
