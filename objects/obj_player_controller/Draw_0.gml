@@ -31,7 +31,11 @@ if (block_selected)
 {
 	r_push_matrix();
 	var outline_buf = r_start_drawing(global.vformat_outline);
-	br_draw_block_outline(outline_buf, sel_block_x, sel_block_y, sel_block_z);
+	var bl = obj_world.get_block(sel_block_x, sel_block_y, sel_block_z)
+	if (bl > 0)
+	{
+		br_draw_block_outline(outline_buf, global.blocks[bl], sel_block_x, sel_block_y, sel_block_z);	
+	}
 	r_stop_drawing(outline_buf);
 	vertex_submit(outline_buf, pr_linelist, sprite_get_texture(tx_null_block, 0))
 	vertex_delete_buffer(outline_buf)

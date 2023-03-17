@@ -17,4 +17,5 @@ var box_center = new vec3(pos_x + 0.5, pos_y + box_height / 2, pos_z + 0.5);
 var box_extent = new vec3(box_radius / 2, box_height / 2, box_radius / 2);
 box = new c_aabb(box_center, box_extent)
 
-aabb_pool = []
+col_pool = []
+block_pool = []

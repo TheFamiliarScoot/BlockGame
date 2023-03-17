@@ -56,22 +56,25 @@ with (plyr)
 	
 	other.block_selected = false
 	var lastdist = infinity
-	for (var i = 0; i < array_length(aabb_pool); i++)
+	for (var i = 0; i < array_length(block_pool); i++)
 	{
-		if (aabb_pool[i].check_ray(other.ray, other.hit))
+		var pool_entry = block_pool[i]
+		var block_aabb = global.blocks[pool_entry[0]].get_aabb(pool_entry[1], pool_entry[2], pool_entry[3])
+		if (block_aabb.check_ray(other.ray, other.hit))
 		{
 			if (other.hit.distance < lastdist)
 			{
 				other.block_selected = true
-				other.sel_block_x = floor(aabb_pool[i].center.x)
-				other.sel_block_y = floor(aabb_pool[i].center.y)
-				other.sel_block_z = floor(aabb_pool[i].center.z)
+				other.sel_block_x = floor(pool_entry[1])
+				other.sel_block_y = floor(pool_entry[2])
+				other.sel_block_z = floor(pool_entry[3])
 				other.sel_norm_x = floor(other.hit.normal.x)
 				other.sel_norm_y = floor(other.hit.normal.y)
 				other.sel_norm_z = floor(other.hit.normal.z)
 				lastdist = other.hit.distance
 			}
 		}
+		delete block_aabb
 	}
 }
 

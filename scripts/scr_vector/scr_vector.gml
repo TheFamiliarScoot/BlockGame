@@ -89,6 +89,11 @@ function vec2(_x, _y) constructor
 		var m = self.mag();
 		return new vec2(self.x / m.x, self.y / m.y);
 	};
+	
+	static _abs = function()
+	{
+		return new vec2(abs(self.x), abs(self.y))
+	}
 }
 
 function vec3(_x, _y, _z) constructor
@@ -183,4 +188,9 @@ function vec3(_x, _y, _z) constructor
 		var m = self.mag();
 		return new vec3(self.x / m, self.y / m, self.z / m);
 	};
+	
+	static _abs = function()
+	{
+		return new vec3(abs(self.x), abs(self.y), abs(self.z))
+	}
 }

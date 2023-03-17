@@ -10,337 +10,351 @@ vertex_format_add_position_3d();
 vertex_format_add_color();
 global.vformat_outline = vertex_format_end();
 
-function br_draw_face(buffer, texture, _x, _y, _z, face)
+function br_draw_face(buffer, bl, _x, _y, _z, face)
 {
 	switch (face)
 	{
-		case 0: br_draw_top_face(buffer, texture, _x, _y, _z, c_white); break;
-		case 1: br_draw_bottom_face(buffer, texture, _x, _y, _z, make_color_rgb(70, 70, 70)); break;
-		case 2: br_draw_north_face(buffer, texture, _x, _y, _z, make_color_rgb(230, 230, 230)); break;
-		case 3: br_draw_south_face(buffer, texture, _x, _y, _z, make_color_rgb(200, 200, 200)); break;
-		case 4: br_draw_east_face(buffer, texture, _x, _y, _z, make_color_rgb(170, 170, 170)); break;
-		case 5: br_draw_west_face(buffer, texture, _x, _y, _z, make_color_rgb(180, 180, 180)); break;
+		case 0: br_draw_top_face(buffer, bl, _x, _y, _z, c_white); break;
+		case 1: br_draw_bottom_face(buffer, bl, _x, _y, _z, make_color_rgb(70, 70, 70)); break;
+		case 2: br_draw_north_face(buffer, bl, _x, _y, _z, make_color_rgb(230, 230, 230)); break;
+		case 3: br_draw_south_face(buffer, bl, _x, _y, _z, make_color_rgb(200, 200, 200)); break;
+		case 4: br_draw_east_face(buffer, bl, _x, _y, _z, make_color_rgb(170, 170, 170)); break;
+		case 5: br_draw_west_face(buffer, bl, _x, _y, _z, make_color_rgb(180, 180, 180)); break;
 	}
 }
 
-function br_draw_top_face(buffer, texture, _xx, _yy, _zz, color)
+function br_draw_top_face(buffer, bl, _xx, _yy, _zz, color)
 {
-	var t = sprite_get_uvs(texture, 0)
+	var t = sprite_get_uvs(bl.get_face(0), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
 	var uv2 = new vec2(t[2], t[3])
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// triangle 1 (tl, br, bl)
 	
-	vertex_position_3d(buffer, _x, _y + s, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 0, 1, 0)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 0, 1, 0)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 
-	vertex_position_3d(buffer, _x, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 0, 1, 0)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
 	// triangle 2 (tr, br, tl)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 0, 1, 0)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 0, 1, 0)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y + s, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 0, 1, 0)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 }
 
-function br_draw_bottom_face(buffer, texture, _xx, _yy, _zz, color)
+function br_draw_bottom_face(buffer, bl, _xx, _yy, _zz, color)
 {
-	var t = sprite_get_uvs(texture, 0)
+	var t = sprite_get_uvs(bl.get_face(1), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
 	var uv2 = new vec2(t[2], t[3])
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// triangle 1
 	
-	vertex_position_3d(buffer, _x, _y, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 0, -1, 0)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 0, -1, 0)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 0, -1, 0)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
 	// triangle 2
 	
-	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 0, -1, 0)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 0, -1, 0)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 0, -1, 0)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 }
 
-function br_draw_north_face(buffer, texture, _xx, _yy, _zz, color)
+function br_draw_north_face(buffer, bl, _xx, _yy, _zz, color)
 {
-	var t = sprite_get_uvs(texture, 0)
+	var t = sprite_get_uvs(bl.get_face(2), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
 	var uv2 = new vec2(t[2], t[3])
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// triangle 1
 	
-	vertex_position_3d(buffer, _x, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 0, 0, -1)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 0, 0, -1)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 0, 0, -1)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
 	// triangle 2
 	
-	vertex_position_3d(buffer, _x, _y, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 0, 0, -1)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 0, 0, -1)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 0, 0, -1)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 }
 
-function br_draw_south_face(buffer, texture, _xx, _yy, _zz, color)
+function br_draw_south_face(buffer, bl, _xx, _yy, _zz, color)
 {
-	var t = sprite_get_uvs(texture, 0)
+	var t = sprite_get_uvs(bl.get_face(3), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
 	var uv2 = new vec2(t[2], t[3])
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// triangle 1
 	
-	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 0, 0, 1)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 0, 0, 1)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y + s, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 0, 0, 1)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
 	// triangle 2
 	
-	vertex_position_3d(buffer, _x + s, _y, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 0, 0, 1)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 0, 0, 1)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 0, 0, 1)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 }
 
-function br_draw_east_face(buffer, texture, _xx, _yy, _zz, color)
+function br_draw_east_face(buffer, bl, _xx, _yy, _zz, color)
 {
-	var t = sprite_get_uvs(texture, 0)
+	var t = sprite_get_uvs(bl.get_face(4), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
 	var uv2 = new vec2(t[2], t[3])
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// triangle 1
 	
-	vertex_position_3d(buffer, _x, _y + s, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, 1, 0, 0)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 1, 0, 0)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 1, 0, 0)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
 	// triangle 2
 	
-	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, 1, 0, 0)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, 1, 0, 0)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x, _y, _z + s)
+	vertex_position_3d(buffer, _x + mn.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, 1, 0, 0)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 }
 
-function br_draw_west_face(buffer, texture, _xx, _yy, _zz, color)
+function br_draw_west_face(buffer, bl, _xx, _yy, _zz, color)
 {
-	var t = sprite_get_uvs(texture, 0)
+	var t = sprite_get_uvs(bl.get_face(5), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
 	var uv2 = new vec2(t[2], t[3])
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// triangle 1
 	
-	vertex_position_3d(buffer, _x + s, _y, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, -1, 0, 0)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, -1, 0, 0)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mn.z)
 	vertex_normal(buffer, -1, 0, 0)
 	vertex_texcoord(buffer, uv2.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
 	// triangle 2
 	
-	vertex_position_3d(buffer, _x + s, _y, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mx.z)
 	vertex_normal(buffer, -1, 0, 0)
 	vertex_texcoord(buffer, uv1.x, uv2.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y + s, _z + s)
+	vertex_position_3d(buffer, _x + mx.x, _y + mx.y, _z + mx.z)
 	vertex_normal(buffer, -1, 0, 0)
 	vertex_texcoord(buffer, uv1.x, uv1.y)
 	vertex_color(buffer, color, 1)
 	
-	vertex_position_3d(buffer, _x + s, _y, _z)
+	vertex_position_3d(buffer, _x + mx.x, _y + mn.y, _z + mn.z)
 	vertex_normal(buffer, -1, 0, 0)
 	vertex_texcoord(buffer, uv2.x, uv2.y)
 	vertex_color(buffer, color, 1)
 }
 
-function br_draw_block_outline(buffer, xx, yy, zz)
+function br_draw_block_outline(buffer, bl, xx, yy, zz)
 {
 	var s = 1;
 	var _x = xx * s;
 	var _y = yy * s;
 	var _z = zz * s;
+	var mn = bl.pos_min
+	var mx = bl.pos_max
 	
 	// bottom outline
 	
-	br_add_point_with_color(buffer, _x, _y, _z, c_black, 0.5);
-	br_add_point_with_color(buffer, _x + s, _y, _z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mn.y, _z + mn.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mn.y, _z + mn.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x + s, _y, _z, c_black, 0.5);
-	br_add_point_with_color(buffer, _x + s, _y, _z + s, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mn.y, _z + mn.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mn.y, _z + mx.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x + s, _y, _z + s, c_black, 0.5);
-	br_add_point_with_color(buffer, _x, _y, _z + s, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mn.y, _z + mx.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mn.y, _z + mx.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x, _y, _z + s, c_black, 0.5);
-	br_add_point_with_color(buffer, _x, _y, _z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mn.y, _z + mx.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mn.y, _z + mn.z, c_black, 0.5);
 	
 	// top outline
 	
-	br_add_point_with_color(buffer, _x, _y + s, _z, c_black, 0.5);
-	br_add_point_with_color(buffer, _x + s, _y + s, _z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mx.y, _z + mn.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mx.y, _z + mn.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x + s, _y + s, _z, c_black, 0.5);
-	br_add_point_with_color(buffer, _x + s, _y + s, _z + s, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mx.y, _z + mn.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mx.y, _z + mx.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x + s, _y + s, _z + s, c_black, 0.5);
-	br_add_point_with_color(buffer, _x, _y + s, _z + s, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mx.y, _z + mx.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mx.y, _z + mx.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x, _y + s, _z + s, c_black, 0.5);
-	br_add_point_with_color(buffer, _x, _y + s, _z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mx.y, _z + mx.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mx.y, _z + mn.z, c_black, 0.5);
 	
 	// sides
 	
-	br_add_point_with_color(buffer, _x, _y, _z, c_black, 0.5);
-	br_add_point_with_color(buffer, _x, _y + s, _z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mn.y, _z + mn.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mx.y, _z + mn.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x + s, _y, _z, c_black, 0.5);
-	br_add_point_with_color(buffer, _x + s, _y + s, _z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mn.y, _z + mn.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mx.y, _z + mn.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x + s, _y, _z + s, c_black, 0.5);
-	br_add_point_with_color(buffer, _x + s, _y + s, _z + s, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mn.y, _z + mx.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mx.x, _y + mx.y, _z + mx.z, c_black, 0.5);
 	
-	br_add_point_with_color(buffer, _x, _y, _z + s, c_black, 0.5);
-	br_add_point_with_color(buffer, _x, _y + s, _z + s, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mn.y, _z + mx.z, c_black, 0.5);
+	br_add_point_with_color(buffer, _x + mn.x, _y + mx.y, _z + mx.z, c_black, 0.5);
 }
 
 function br_add_point_with_color(buffer, _x, _y, _z, color, alpha)

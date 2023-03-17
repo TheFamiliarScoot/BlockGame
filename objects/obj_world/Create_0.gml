@@ -82,14 +82,35 @@ get_aabbs_in_range = function(fromx, fromy, fromz, tox, toy, toz)
 		{
 			for (var zz = fromz; zz < toz; zz++)
 			{
-				if (get_block(xx, yy, zz) > 0 && global.blocks[get_block(xx, yy, zz)].solid)
+				var bl = get_block(xx, yy, zz)
+				if (bl > 0 && global.blocks[bl].solid)
 				{
-					array_push(aabbs, new c_aabb(new vec3(xx + 0.5, yy + 0.5, zz + 0.5), new vec3(0.5,0.5,0.5)));
+					array_push(aabbs, global.blocks[bl].get_aabb(xx, yy, zz));
 				}
 			}
 		}
 	}
 	return aabbs
+}
+
+get_selectable_blocks_in_range = function(fromx, fromy, fromz, tox, toy, toz)
+{
+	var blocks = [];
+	for (var xx = fromx; xx < tox; xx++)
+	{
+		for (var yy = fromy; yy < toy; yy++)
+		{
+			for (var zz = fromz; zz < toz; zz++)
+			{
+				var bl = get_block(xx, yy, zz)
+				if (bl > 0 && global.blocks[bl].selectable)
+				{
+					array_push(blocks, [bl, xx, yy, zz]);
+				}
+			}
+		}
+	}
+	return blocks
 }
 
 for (var xx = 0; xx < array_length(chunks); xx++)

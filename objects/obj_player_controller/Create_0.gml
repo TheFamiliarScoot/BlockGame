@@ -27,4 +27,4 @@ vertex_freeze(skybox)
 
 mouse_deadzone = 0.01
 
-hotbar_blocks = [1, 2, 3, 4, 5, 7, 12]
+hotbar_blocks = [1, 2, 3, 4, 5, 6, 7, 12]

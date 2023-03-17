@@ -147,7 +147,7 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 						{
 							if (global.blocks[bl].should_render_face(world, worldx, worldy, worldz, face))
 							{
-								br_draw_face(batched_buffer, global.blocks[bl].get_face(face), xx, yy, zz, face)
+								br_draw_face(batched_buffer, global.blocks[bl], xx, yy, zz, face)
 							}
 						}	
 					}
