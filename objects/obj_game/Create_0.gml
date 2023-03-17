@@ -15,5 +15,5 @@ player = instance_create_depth(0, 0, 0, obj_player)
 controller = instance_create_depth(0, 0, 0, obj_player_controller, {plyr:player})
 camera = instance_create_depth(0, 0, 0, obj_camera)
 player.pos_x = 64
-player.pos_y = 32
+player.pos_y = 128
 player.pos_z = 64

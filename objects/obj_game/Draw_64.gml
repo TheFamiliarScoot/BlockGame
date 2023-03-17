@@ -26,7 +26,7 @@ else
 	var b = r_start_drawing(global.vformat_block)
 	for (var i = 0; i < 6; i++)
 	{
-		br_draw_face(b, global.blocks[controller.selected_block].get_face(i), 0, 0, 0, i)
+		br_draw_face(b, global.blocks[controller.hotbar_blocks[controller.selected_block]].get_face(i), 0, 0, 0, i)
 	}
 	r_stop_drawing(b)
 	r_push_matrix()

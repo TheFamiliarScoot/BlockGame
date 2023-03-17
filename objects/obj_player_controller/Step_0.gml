@@ -12,7 +12,7 @@ with (plyr)
 		if (window_has_focus() && mouse_in_x && mouse_in_y)
 		{
 			var md = other.mouse_deadzone
-			var xx = (((window_mouse_get_x() + 0.5) - window_get_width() / 2) * _dt)
+			var xx = ((window_mouse_get_x() - window_get_width() / 2) * _dt)
 			var yy = ((window_mouse_get_y() - window_get_height() / 2) * _dt)
 			other.look_vec.x = xx < md && xx > -md ? 0 : xx * other.sensitivity
 			other.look_vec.y = yy < md && yy > -md ? 0 : yy * other.sensitivity
@@ -85,9 +85,9 @@ if (block_selected && (mouse_check_button_pressed(mb_right) || gamepad_button_ch
 	var yy = sel_block_y + sel_norm_y
 	var zz = sel_block_z + sel_norm_z
 	
-	if (obj_world.get_block(xx, yy, zz) == 0)
+	if (obj_world.get_block(xx, yy, zz) == 0 || !global.blocks[obj_world.get_block(xx, yy, zz)].solid)
 	{
-		obj_world.set_block(xx, yy, zz, selected_block)
+		obj_world.set_block(xx, yy, zz, hotbar_blocks[selected_block])
 	}
 }
 
@@ -96,19 +96,19 @@ if (gamepad_button_check_pressed(0, gp_select) || keyboard_check_pressed(ord("R"
 	instance_destroy(plyr);
 	plyr = instance_create_depth(0, 0, 0, obj_player)
 	plyr.pos_x = 64
-	plyr.pos_y = 32
+	plyr.pos_y = 128
 	plyr.pos_z = 64
 	obj_game.player = plyr
 }
 
 if (mouse_wheel_down() || gamepad_button_check_pressed(0, gp_shoulderr))
 {
-	selected_block = clamp(selected_block + 1, 1, 3)
+	selected_block = clamp(selected_block + 1, 0, array_length(hotbar_blocks) - 1)
 }
 
 if (mouse_wheel_up() || gamepad_button_check_pressed(0, gp_shoulderl))
 {
-	selected_block = clamp(selected_block - 1, 1, 3)
+	selected_block = clamp(selected_block - 1, 0, array_length(hotbar_blocks) - 1)
 }
 	
 hit.clear();

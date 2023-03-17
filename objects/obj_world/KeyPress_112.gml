@@ -1,0 +1,1 @@
+s_save_world(id, 0)
