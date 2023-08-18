@@ -3,13 +3,18 @@ noise = new noisegen(random_get_seed())
 
 chunks = []
 
-for (var xx = 0; xx < 16; xx++)
+var xx = 0;
+var zz = 0;
+repeat (16)
 {
-	for (var zz = 0; zz < 16; zz++)
+	repeat (16)
 	{
 		var c = new chunk(xx, 0, zz, 16, 128, 16)
 		chunks[xx, zz] = c
+		zz++;
 	}
+	xx++;
+	zz = 0;
 }
 
 get_chunk = function(xx, zz)
@@ -113,25 +118,34 @@ get_selectable_blocks_in_range = function(fromx, fromy, fromz, tox, toy, toz)
 	return blocks
 }
 
-for (var xx = 0; xx < array_length(chunks); xx++)
+xx = 0;
+zz = 0;
+repeat (array_length(chunks))
 {
-	for (var zz = 0; zz < array_length(chunks[xx]); zz++)
+	repeat(array_length(chunks[xx]))
 	{
 		if (!chunks[xx][zz].is_generated)
 		{
 			chunks[xx][zz].generate(noise)
 		}
+		zz++;
 	}
+	xx++;
+	zz = 0;
 }
 
-
-for (var xx = 0; xx < array_length(chunks); xx++)
+xx = 0;
+zz = 0;
+repeat (array_length(chunks))
 {
-	for (var zz = 0; zz < array_length(chunks[xx]); zz++)
+	repeat(array_length(chunks[xx]))
 	{
 		if (chunks[xx][zz].is_generated)
 		{
 			chunks[xx][zz].update_vbuffers(id)
 		}
+		zz++;
 	}
+	xx++;
+	zz = 0;
 }

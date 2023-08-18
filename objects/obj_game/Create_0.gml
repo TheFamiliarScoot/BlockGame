@@ -1,4 +1,6 @@
 /// @description Insert description here
+draw_set_font(fnt_minecraft);
+
 randomize();
 
 // resolution

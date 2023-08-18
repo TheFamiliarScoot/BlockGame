@@ -30,7 +30,7 @@
   "isEcma": false,
   "LibraryEmitters": [],
   "MetaData": {
-    "IDEVersion": "2023.2.1.75",
+    "IDEVersion": "2023.6.0.92",
   },
   "resources": [
     {"id":{"name":"scr_render_model","path":"scripts/scr_render_model/scr_render_model.yy",},},
@@ -57,6 +57,8 @@
     {"id":{"name":"tx_sand","path":"sprites/tx_sand/tx_sand.yy",},},
     {"id":{"name":"tx_grass_side","path":"sprites/tx_grass_side/tx_grass_side.yy",},},
     {"id":{"name":"tx_skybox_east","path":"sprites/tx_skybox_east/tx_skybox_east.yy",},},
+    {"id":{"name":"fnt_minecraft","path":"fonts/fnt_minecraft/fnt_minecraft.yy",},},
+    {"id":{"name":"scr_text","path":"scripts/scr_text/scr_text.yy",},},
     {"id":{"name":"tx_grass_top","path":"sprites/tx_grass_top/tx_grass_top.yy",},},
     {"id":{"name":"scr_blocks","path":"scripts/scr_blocks/scr_blocks.yy",},},
     {"id":{"name":"obj_spatial","path":"objects/obj_spatial/obj_spatial.yy",},},
@@ -75,6 +77,7 @@
     {"id":{"name":"tx_log_side","path":"sprites/tx_log_side/tx_log_side.yy",},},
     {"id":{"name":"tx_null_block","path":"sprites/tx_null_block/tx_null_block.yy",},},
     {"id":{"name":"tx_gravel","path":"sprites/tx_gravel/tx_gravel.yy",},},
+    {"id":{"name":"tx_water","path":"sprites/tx_water/tx_water.yy",},},
     {"id":{"name":"obj_camera","path":"objects/obj_camera/obj_camera.yy",},},
     {"id":{"name":"obj_player_controller","path":"objects/obj_player_controller/obj_player_controller.yy",},},
     {"id":{"name":"tx_skybox_bottom","path":"sprites/tx_skybox_bottom/tx_skybox_bottom.yy",},},
@@ -89,5 +92,6 @@
   "TextureGroups": [
     {"resourceType":"GMTextureGroup","resourceVersion":"1.3","name":"Default","autocrop":true,"border":2,"compressFormat":"bz2","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"targets":-1,},
     {"resourceType":"GMTextureGroup","resourceVersion":"1.3","name":"Blocks","autocrop":false,"border":2,"compressFormat":"bz2","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"targets":-1,},
+    {"resourceType":"GMTextureGroup","resourceVersion":"1.3","name":"Water","autocrop":true,"border":2,"compressFormat":"bz2","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"targets":-1,},
   ],
 }

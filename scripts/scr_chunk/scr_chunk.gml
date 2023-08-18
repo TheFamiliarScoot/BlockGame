@@ -9,7 +9,7 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 	
 	self.grid_buffer = buffer_create(sizex*sizey*sizez, buffer_fast, 1)
 	
-	self.batched_buffer = undefined
+	self.batched_buffer = [undefined, undefined, undefined]
 	
 	self.updates_needed = []
 	
@@ -54,9 +54,11 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 	
 	static generate = function(noise)
 	{
-		for (var xx = 0; xx < sizex; xx++)
+		var xx = 0;
+		var zz = 0;
+		repeat (sizex)
 		{
-			for (var zz = 0; zz < sizez; zz++)
+			repeat (sizez)
 			{
 				// calculate base noise level
 				var level = noise.get_noise((xx + x * sizex) / 4, (zz + z * sizez) / 4, 40)
@@ -80,7 +82,9 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 					topblock = global.block_sand.id
 					beach = true
 				}
-				for (var yy = 0; yy < sizey; yy++)
+				
+				var yy = 0;
+				repeat (sizey)
 				{
 					var blockid = 0
 					
@@ -113,9 +117,14 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 					}
 					
 					// set block
-					buffer_poke(grid_buffer, g_flatten(xx, yy, zz, sizex, sizey, sizez), buffer_u8, blockid)		
+					buffer_poke(grid_buffer, g_flatten(xx, yy, zz, sizex, sizey, sizez), buffer_u8, blockid)
+					
+					yy++;
 				}
+				zz++;
 			}
+			xx++;
+			zz = 0;
 		}
 		is_generated = true
 	}
@@ -129,40 +138,53 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 	
 	static update_vbuffers = function(world)
 	{
-		if (batched_buffer != undefined) vertex_delete_buffer(batched_buffer)
-		batched_buffer = r_start_drawing(global.vformat_block)
-		for (var xx = 0; xx < sizex; xx++)
+		var lyr = 0;
+		repeat (array_length(batched_buffer))
 		{
-			for (var yy = 0; yy < sizey; yy++)
+			var drew_something = false
+			if (batched_buffer[lyr] != undefined) vertex_delete_buffer(batched_buffer[lyr])
+			batched_buffer[lyr] = r_start_drawing(global.vformat_block)
+			var xx = 0;
+			var yy = 0;
+			var zz = 0;
+			repeat (sizex)
 			{
-				for (var zz = 0; zz < sizez; zz++)
+				repeat (sizey)
 				{
-					var worldx = xx + x * sizex
-					var worldy = yy + y * sizey
-					var worldz = zz + z * sizez
-					var bl = get_block_in_grid(xx, yy, zz)
-					if (bl > 0)
+					repeat (sizez)
 					{
-						for (var face = 0; face < 6; face++)
+						var bl = get_block_in_grid(xx, yy, zz)
+						if (bl > 0 && global.blocks[bl].render_layer == lyr)
 						{
-							if (global.blocks[bl].should_render_face(world, worldx, worldy, worldz, face))
-							{
-								br_draw_face(batched_buffer, global.blocks[bl], xx, yy, zz, face)
-							}
-						}	
+							render_block(batched_buffer[lyr], world, xx, yy, zz, global.blocks[bl])
+							drew_something = true
+						}
+						zz++;
 					}
+					yy++;
+					zz = 0;
 				}
+				xx++;
+				yy = 0;
 			}
+			if (drew_something)
+			{
+				r_stop_drawing(batched_buffer[lyr])
+				vertex_freeze(batched_buffer[lyr])
+			}
+			else
+			{
+				batched_buffer[lyr] = undefined	
+			}
+			lyr++;
 		}
-		r_stop_drawing(batched_buffer)
-		vertex_freeze(batched_buffer)
 	}
 	
-	static draw_vbuffers = function()
+	static draw_vbuffers = function(lyr)
 	{
-		if (batched_buffer != undefined)
+		if (batched_buffer[lyr] != undefined)
 		{
-			vertex_submit(batched_buffer, pr_trianglelist, sprite_get_texture(tx_null_block, 0))	
+			vertex_submit(batched_buffer[lyr], pr_trianglelist, sprite_get_texture(tx_null_block, 0))	
 		}
 	}
 	
@@ -190,7 +212,36 @@ function chunk(_x, _y, _z, sizex, sizey, sizez) constructor
 	static unload = function()
 	{
 		buffer_delete(grid_buffer)
-		vertex_delete_buffer(batched_buffer)
+		var i = 0;
+		repeat (array_length(batched_buffer))
+		{
+			vertex_delete_buffer(batched_buffer[i])	
+			i++;
+		}
+	}
+	
+	static render_block = function(buffer, world, xx, yy, zz, bl)
+	{
+		switch (bl.render_type)
+		{
+			case 0: // CUBE
+				var worldx = xx + x * sizex
+				var worldy = yy + y * sizey
+				var worldz = zz + z * sizez
+				var face = 0;
+				repeat (6)
+				{
+					if (bl.should_render_face(world, worldx, worldy, worldz, face))
+					{
+						br_draw_face(buffer, bl, xx, yy, zz, face)
+					}
+					face++;
+				}
+				break;
+			case 1: // SAPLING/FLOWER
+				br_draw_flower(buffer, bl, xx, yy, zz, c_white, 1)
+				break;
+		}
 	}
 }
 	

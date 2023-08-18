@@ -23,7 +23,8 @@ var dz = vel_z * _dt;
 //show_debug_message("aabbs: " + string(array_length(aabbs)))
 
 box.center.y = pos_y + box.ext.y + dy;
-for (var i = 0; i < array_length(col_pool); i++)
+var i = 0;
+repeat (array_length(col_pool))
 {
 	var aabb = col_pool[i]
 	if (aabb.center.dist(box.center) < 4)
@@ -38,13 +39,15 @@ for (var i = 0; i < array_length(col_pool); i++)
 			break;
 		}		
 	}
+	i++;
 }
 pos_y += dy;
 
 box.center.y += 0.01;
 
 box.center.x = pos_x + dx;
-for (var i = 0; i < array_length(col_pool); i++)
+i = 0;
+repeat (array_length(col_pool))
 {
 	var aabb = col_pool[i]
 	if (aabb.center.dist(box.center) < 2)
@@ -58,11 +61,13 @@ for (var i = 0; i < array_length(col_pool); i++)
 			break;
 		}
 	}
+	i++;
 }
 pos_x += dx;
 
 box.center.z = pos_z + dz;
-for (var i = 0; i < array_length(col_pool); i++)
+i = 0;
+repeat (array_length(col_pool))
 {
 	var aabb = col_pool[i]
 	if (aabb.center.dist(box.center) < 2)
@@ -76,6 +81,7 @@ for (var i = 0; i < array_length(col_pool); i++)
 			break;
 		}
 	}
+	i++;
 }
 pos_z += dz;
 
@@ -87,9 +93,11 @@ vel_z /= frict
 vel_y -= 0.3;
 
 // dereference collision pool (prevents a memory leak)
-for (var i = 0; i < array_length(col_pool); i++)
+i = 0;
+repeat (array_length(col_pool))
 {
 	delete col_pool[i]
+	i++;
 }
 
 block_pool = obj_world.get_selectable_blocks_in_range(

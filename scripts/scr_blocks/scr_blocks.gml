@@ -14,6 +14,8 @@ function block(i, n, s, o, sel, face_func) constructor
 	}
 	pos_min = new vec3(0, 0, 0)
 	pos_max = new vec3(1, 1, 1)
+	render_layer = 0
+	render_type = 0
 	get_aabb = function(xx, yy, zz)
 	{
 		var center_position = pos_min.add(pos_max).divd(2);
@@ -79,6 +81,8 @@ global.block_sapling = add_block(new block(6, "Sapling", false, false, true,
 ));
 global.block_sapling.pos_min = new vec3(3/16, 0, 3/16)
 global.block_sapling.pos_max = new vec3(13/16, 13/16, 13/16)
+global.block_sapling.render_type = 1
+global.block_sapling.render_layer = 1
 
 global.block_bedrock = add_block(new block(7, "Bedrock", true, true, true,
 	// get_face
@@ -92,11 +96,12 @@ global.block_water = add_block(new block(8, "Water", false, false, false,
 	// get_face
 	function(face)
 	{
-		return tx_null_block
+		return tx_water
 	}
 ));
 global.block_water.pos_max.y = 15/16
 global.block_water.pos_min.y = -1/16
+global.block_water.render_layer = 2
 
 // RESERVED FOR OTHER FLUIDS
 

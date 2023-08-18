@@ -56,7 +56,8 @@ with (plyr)
 	
 	other.block_selected = false
 	var lastdist = infinity
-	for (var i = 0; i < array_length(block_pool); i++)
+	var i = 0;
+	repeat (array_length(block_pool))
 	{
 		var pool_entry = block_pool[i]
 		var block_aabb = global.blocks[pool_entry[0]].get_aabb(pool_entry[1], pool_entry[2], pool_entry[3])
@@ -75,6 +76,7 @@ with (plyr)
 			}
 		}
 		delete block_aabb
+		i++;
 	}
 }
 

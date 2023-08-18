@@ -86,7 +86,7 @@ function vec2(_x, _y) constructor
 	
 	static norm = function()
 	{
-		var m = self.mag();
+		var m = self.mag(self);
 		return new vec2(self.x / m.x, self.y / m.y);
 	};
 	

@@ -25,6 +25,10 @@ function br_draw_face(buffer, bl, _x, _y, _z, face)
 
 function br_draw_top_face(buffer, bl, _xx, _yy, _zz, color)
 {
+	var mn = bl.pos_min
+	var mx = bl.pos_max
+	var tw = texture_get_width(sprite_get_texture(bl.get_face(0), 0))
+	var th = texture_get_height(sprite_get_texture(bl.get_face(0), 0))
 	var t = sprite_get_uvs(bl.get_face(0), 0)
 	var s = 1
 	var uv1 = new vec2(t[0], t[1])
@@ -32,8 +36,6 @@ function br_draw_top_face(buffer, bl, _xx, _yy, _zz, color)
 	var _x = _xx * s
 	var _y = _yy * s
 	var _z = _zz * s
-	var mn = bl.pos_min
-	var mx = bl.pos_max
 	
 	// triangle 1 (tl, br, bl)
 	
@@ -372,7 +374,8 @@ function br_add_vertex_buffer(destination, source, matrix)
                  0,          0,          0, matrix[15]
     ];
     var data = buffer_create_from_vertex_buffer(source, buffer_fixed, 1);
-    for (var i = 0; i < buffer_get_size(data); i += 36)
+	var i = 0;
+    repeat (buffer_get_size(data))
 	{
         var xx = buffer_peek(data, i + 00, buffer_f32);
         var yy = buffer_peek(data, i + 04, buffer_f32);
@@ -395,6 +398,52 @@ function br_add_vertex_buffer(destination, source, matrix)
 		vertex_normal(destination, norm[0], norm[1], norm[2])
 		vertex_texcoord(destination, xt, yt)
 		vertex_color(destination, cc & 0xffffff, (cc >> 24) / 255)
+		i += 36;
     }
 	buffer_delete(data)
+}
+
+function br_draw_flower(buffer, bl, _xx, _yy, _zz, color, alpha)
+{
+	var t = sprite_get_uvs(bl.get_face(2), 0)
+	var s = 1
+	var uv1 = new vec2(t[0], t[1])
+	var uv2 = new vec2(t[2], t[3])
+	var _x = _xx * s
+	var _y = _yy * s
+	var _z = _zz * s
+	
+	// triangle 1
+	
+	vertex_position_3d(buffer, _x, _y + 1, _z)
+	vertex_normal(buffer, 0, 0, -1)
+	vertex_texcoord(buffer, uv1.x, uv1.y)
+	vertex_color(buffer, color, 1)
+	
+	vertex_position_3d(buffer, _x, _y + 1, _z + 1)
+	vertex_normal(buffer, 0, 0, -1)
+	vertex_texcoord(buffer, uv2.x, uv1.y)
+	vertex_color(buffer, color, 1)
+	
+	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_normal(buffer, 0, 0, -1)
+	vertex_texcoord(buffer, uv1.x, uv2.y)
+	vertex_color(buffer, color, 1)
+	
+	// triangle 2
+	
+	vertex_position_3d(buffer, _x, _y, _z)
+	vertex_normal(buffer, 0, 0, -1)
+	vertex_texcoord(buffer, uv1.x, uv2.y)
+	vertex_color(buffer, color, 1)
+	
+	vertex_position_3d(buffer, _x + 1, _y + 1, _z + 1)
+	vertex_normal(buffer, 0, 0, -1)
+	vertex_texcoord(buffer, uv2.x, uv1.y)
+	vertex_color(buffer, color, 1)
+	
+	vertex_position_3d(buffer, _x + 1, _y + 1, _z)
+	vertex_normal(buffer, 0, 0, -1)
+	vertex_texcoord(buffer, uv2.x, uv2.y)
+	vertex_color(buffer, color, 1)	
 }

@@ -1,8 +1,12 @@
 s_load_world(id, 0)
-for (var xx = 0; xx < array_length(chunks); xx++)
+var xx = 0;
+var yy = 0;
+repeat (array_length(chunks))
 {
-	for (var zz = 0; zz < array_length(chunks[xx]); zz++)
+	repeat(array_length(chunks[xx]))
 	{
-		chunks[xx][zz].update_vbuffers()	
+		chunks[xx][zz].update_vbuffers(self)	
 	}
+	xx++;
+	zz = 0;
 }
