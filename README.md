@@ -2,6 +2,7 @@
  Minecraft Classic in GameMaker
 
 This is a heavy work-in-progress, expect things to be weird!
+If you want to compile this yourself, I heavily suggest using YYC - as load times will exponentionally increase.
 
 # Controls
 ## Keyboard & Mouse
